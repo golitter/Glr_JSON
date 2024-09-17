@@ -7,7 +7,7 @@ void Parser::load(const string& str) {
     m_idx = 0;
 }
 
-    // È¥¿Õ°××Ö·û
+    // å»ç©ºç™½å­—ç¬¦
 void Parser::skip_white_space() {
     while(m_str[m_idx] == ' ' ||
         m_str[m_idx] == '\n' || m_str[m_idx] == '\r' ||  m_str[m_idx] == '\t'
@@ -15,7 +15,7 @@ void Parser::skip_white_space() {
         m_idx++;
     }
 }
-    // »ñÈ¡ÏÂÒ»¸ö×Ö·û
+    // è·å–ä¸‹ä¸€ä¸ªå­—ç¬¦
 char Parser::get_next_token() {
 
     skip_white_space();
@@ -65,7 +65,7 @@ Json Parser::parse() {
         break;
     }
     
-    // Èç¹û¶¼²»ÊÇ£¬Å×³öÒì³£
+    // å¦‚æœéƒ½ä¸æ˜¯ï¼ŒæŠ›å‡ºå¼‚å¸¸
     throw new std::logic_error("unexpected char");
 }
 
@@ -90,12 +90,12 @@ Json Parser::parse_bool() {
     }
 }
 Json Parser::parse_number() {
-    /// @attention: ¿É¸Ä½ø ...
-    /// @bug: È«ÊÇÕûÊı 
-    /// @note£º Êı×ÖºÍ×Ö·ûÅª»ìÁË
+    /// @attention: å¯æ”¹è¿› ...
+    /// @bug: å…¨æ˜¯æ•´æ•° 
+    /// @noteï¼š æ•°å­—å’Œå­—ç¬¦å¼„æ··äº†
     /**
      * @note:
-     * ( atof(),atoi(),itoa()ºÍstoi(),c_str()º¯ÊıµÄÓÃ·¨ )[https://blog.csdn.net/Ven21959/article/details/101431256]
+     * ( atof(),atoi(),itoa()å’Œstoi(),c_str()å‡½æ•°çš„ç”¨æ³• )[https://blog.csdn.net/Ven21959/article/details/101431256]
      * 
     */
     int pos = m_idx;
@@ -110,7 +110,7 @@ Json Parser::parse_number() {
     while(m_str[m_idx] >= '0' && m_str[m_idx] <= '9') {
         m_idx++;
     }
-    // '.' Ğ¡Êıµã 
+    // '.' å°æ•°ç‚¹ 
     if(m_str[m_idx] != '.') {
         int i = std::atoi(m_str.c_str() + pos);
         return Json(i);
@@ -127,8 +127,8 @@ Json Parser::parse_number() {
     double f = std::atof(m_str.c_str() + pos);
     /**
      * @bug:
-     * ¹ØÓÚ¸¡µãÊı¾«¶ÈµÄbug£¬¸¡µãÊıµÄ×ª»»ÊÇÕıÈ·µÄ¡£
-     * Ô­ÒòÔÚÓÚ printf ºÍ coutµÄÄ¬ÈÏ´òÓ¡¡£
+     * å…³äºæµ®ç‚¹æ•°ç²¾åº¦çš„bugï¼Œæµ®ç‚¹æ•°çš„è½¬æ¢æ˜¯æ­£ç¡®çš„ã€‚
+     * åŸå› åœ¨äº printf å’Œ coutçš„é»˜è®¤æ‰“å°ã€‚
     */
 
     // std::clog<<f<<"double"<<std::endl;
@@ -139,7 +139,7 @@ Json Parser::parse_number() {
 string Parser::parse_string() {
     string out;
     while(true) {
-        /// @note: ÓÃget_next_token()¿ÉÄÜ½«×Ö·û´®µÄ¿Õ¸ñÊ¡ÂÔÁË¡£
+        /// @note: ç”¨get_next_token()å¯èƒ½å°†å­—ç¬¦ä¸²çš„ç©ºæ ¼çœç•¥äº†ã€‚
         // char ch = get_next_token(); 
         char ch = m_str[m_idx++];
         if(ch == '"') {
@@ -147,7 +147,7 @@ string Parser::parse_string() {
         }
         if(ch == '\\') {
             /**
-             * ×ªÒå×Ö·û£º
+             * è½¬ä¹‰å­—ç¬¦ï¼š
              * https://www.json.org/json-en.html
             */
             ch = m_str[m_idx++];
@@ -177,6 +177,8 @@ string Parser::parse_string() {
                 break;
             case 'u':
                 out += "\\u";
+            // \u éƒ¨åˆ†æ ‡å¿—ç€åºåˆ—çš„å¼€å§‹ï¼Œè€Œå¾ªç¯åˆ™å°†å¿…è¦çš„åå…­è¿›åˆ¶æ•°å­—æ·»åŠ åˆ°å­—ç¬¦ä¸²ä¸­ï¼Œä»è€Œå®Œæˆè½¬ä¹‰åºåˆ—ã€‚
+            // ä¾‹å¦‚ï¼Œå¦‚æœ m_str ä¸­æ¥ä¸‹æ¥çš„å››ä¸ªå­—ç¬¦æ˜¯ 003Fï¼Œåˆ™æœ€ç»ˆæ·»åŠ åˆ° out çš„åºåˆ—å°†æ˜¯ \u003Fï¼Œè¿™è¡¨ç¤º Unicode å­—ç¬¦ ?ã€‚
                 {
                     for(int i = 0; i < 4; ++i) {
                         out += m_str[m_idx++];
